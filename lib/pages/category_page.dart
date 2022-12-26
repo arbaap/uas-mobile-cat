@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -13,7 +14,36 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   bool isExpense = true;
 
-  
+  void openDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+                child: Column(
+              children: [
+                Text(
+                  (isExpense) ? "Add Expense" : "Add Income",
+                  style: GoogleFonts.montserrat(
+                      fontSize: 18,
+                      color: (isExpense) ? Colors.red : Colors.green),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), hintText: "Name"),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(onPressed: () {}, child: Text("Save"))
+              ],
+            )),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +66,11 @@ class _CategoryPageState extends State<CategoryPage> {
                 inactiveThumbColor: Colors.green,
                 activeColor: Colors.red,
               ),
-              IconButton(onPressed: () {}, icon: Icon(Icons.add))
+              IconButton(
+                  onPressed: () {
+                    openDialog();
+                  },
+                  icon: Icon(Icons.add))
             ],
           ),
         ),
