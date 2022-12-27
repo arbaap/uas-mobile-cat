@@ -5,9 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:uas_mobile/models/category.dart';
 import 'package:uas_mobile/models/database.dart';
+import 'package:uas_mobile/models/transaction_with_category.dart';
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  final TransactionWithCategory? transactionWithCategory;
+  const TransactionPage({Key? key, required this.transactionWithCategory})
+      : super(key: key);
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
@@ -45,11 +48,33 @@ class _TransactionPageState extends State<TransactionPage> {
     return await database.getAllCategoryRepo(type);
   }
 
+  Future update(int transactaionId, int amount, int categoryId,
+      DateTime transactionDate, String nameDetail) async {
+    return await database.updateTransactionRepo(
+        transactaionId, amount, categoryId, transactionDate, nameDetail);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
-    type = 2;
+
+    if (widget.transactionWithCategory != null) {
+      updateTransactionView(widget.transactionWithCategory!);
+    } else {
+      type = 2;
+    }
     super.initState();
+  }
+
+  void updateTransactionView(TransactionWithCategory transactionWithCategory) {
+    amountController.text =
+        transactionWithCategory.transaction.amount.toString();
+    detailController.text = transactionWithCategory.transaction.name;
+    dateController.text = DateFormat("yyyy-MM-dd")
+        .format(transactionWithCategory.transaction.transaction_date);
+    type = transactionWithCategory.category.type;
+    (type == 2) ? isExpense = true : isExpense = false;
+    selectedCategory = transactionWithCategory.category;
   }
 
   @override
@@ -114,7 +139,9 @@ class _TransactionPageState extends State<TransactionPage> {
                 } else {
                   if (snapshot.hasData) {
                     if (snapshot.data!.length > 0) {
-                      selectedCategory = snapshot.data!.first;
+                      selectedCategory = (selectedCategory == null)
+                          ? snapshot.data!.first
+                          : selectedCategory;
                       print('Apanih : ' + snapshot.toString());
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -189,12 +216,20 @@ class _TransactionPageState extends State<TransactionPage> {
           ),
           Center(
               child: ElevatedButton(
-                  onPressed: () {
-                    insert(
-                        int.parse(amountController.text),
-                        DateTime.parse(dateController.text),
-                        detailController.text,
-                        selectedCategory!.id);
+                  onPressed: () async {
+                    (widget.transactionWithCategory == null)
+                        ? insert(
+                            int.parse(amountController.text),
+                            DateTime.parse(dateController.text),
+                            detailController.text,
+                            selectedCategory!.id)
+                        : await update(
+                            widget.transactionWithCategory!.transaction.id,
+                            int.parse(amountController.text),
+                            selectedCategory!.id,
+                            DateTime.parse(dateController.text),
+                            detailController.text);
+                    setState(() {});
                     Navigator.pop(context, true);
                   },
                   child: Text("Save")))

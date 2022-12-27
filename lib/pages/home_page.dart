@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_mobile/models/database.dart';
 import 'package:uas_mobile/models/transaction_with_category.dart';
+import 'package:uas_mobile/pages/transaction_page.dart';
 
 class HomePage extends StatefulWidget {
   final DateTime selectedDate;
@@ -131,11 +132,30 @@ class _HomePageState extends State<HomePage> {
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.delete),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () async {
+                                          await database.deleteCategoryRepo(
+                                              snapshot
+                                                  .data![index].transaction.id);
+                                          setState(() {});
+                                        },
+                                      ),
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      Icon(Icons.edit)
+                                      IconButton(
+                                          icon: Icon(Icons.edit),
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        TransactionPage(
+                                                          transactionWithCategory:
+                                                              snapshot
+                                                                  .data![index],
+                                                        )));
+                                          })
                                     ],
                                   ),
                                   title: Text("Rp. " +
@@ -147,8 +167,12 @@ class _HomePageState extends State<HomePage> {
                                       snapshot.data![index].transaction.name +
                                       ")"),
                                   leading: Container(
-                                    child:
-                                        Icon(Icons.upload, color: Colors.red),
+                                    child: (snapshot
+                                                .data![index].category.type ==
+                                            2)
+                                        ? Icon(Icons.upload, color: Colors.red)
+                                        : Icon(Icons.download,
+                                            color: Colors.green),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8)),
