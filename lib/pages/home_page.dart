@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_mobile/models/database.dart';
+import 'package:uas_mobile/models/transaction_with_category.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final DateTime selectedDate;
+  const HomePage({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final AppDb database = AppDb();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -103,58 +108,67 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Card(
-              elevation: 10,
-              child: ListTile(
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.delete),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.edit)
-                  ],
-                ),
-                title: Text("Rp. 20.000"),
-                subtitle: Text("Makan Siang"),
-                leading: Container(
-                  child: Icon(Icons.upload, color: Colors.red),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Card(
-              elevation: 10,
-              child: ListTile(
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.delete),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.edit)
-                  ],
-                ),
-                title: Text("Rp. 20.000.000"),
-                subtitle: Text("Gaji Bulanan"),
-                leading: Container(
-                  child: Icon(Icons.upload, color: Colors.green),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ),
-          )
+          StreamBuilder<List<TransactionWithCategory>>(
+              stream: database.getTransactionByDateRepo(widget.selectedDate),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.length > 0) {
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Card(
+                                elevation: 10,
+                                child: ListTile(
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.delete),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(Icons.edit)
+                                    ],
+                                  ),
+                                  title: Text("Rp. " +
+                                      snapshot.data![index].transaction.amount
+                                          .toString()),
+                                  subtitle: Text(snapshot
+                                          .data![index].category.name +
+                                      "(" +
+                                      snapshot.data![index].transaction.name +
+                                      ")"),
+                                  leading: Container(
+                                    child:
+                                        Icon(Icons.upload, color: Colors.red),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                    } else {
+                      return Center(
+                        child: Text("Data Kosong"),
+                      );
+                    }
+                  } else {
+                    return Center(
+                      child: Text("Tidak ada data"),
+                    );
+                  }
+                }
+              }),
         ],
       )),
     );

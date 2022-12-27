@@ -16,6 +16,7 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   final AppDb database = AppDb();
   bool isExpense = true;
+  late int type;
   List<String> list = ['Makan dan Jajan', 'Transportasi', 'Nonton Film'];
   late String dropDownValue = list.first;
 
@@ -23,13 +24,32 @@ class _TransactionPageState extends State<TransactionPage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController detailController = TextEditingController();
 
+  Category? selectedCategory;
+
   Future insert(
       int amount, DateTime date, String nameDetail, int categoryId) async {
+    DateTime now = DateTime.now();
+    final row = await database.into(database.transactions).insertReturning(
+        TransactionsCompanion.insert(
+            name: nameDetail,
+            category_id: categoryId,
+            transaction_date: date,
+            amount: amount,
+            createdAt: now,
+            updatedAt: now));
+    print("Apaini : " + row.toString());
     // ada insert db
   }
 
   Future<List<Category>> getAllCategory(int type) async {
     return await database.getAllCategoryRepo(type);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    type = 2;
+    super.initState();
   }
 
   @override
@@ -48,6 +68,8 @@ class _TransactionPageState extends State<TransactionPage> {
                 onChanged: (bool value) {
                   setState(() {
                     isExpense = value;
+                    type = (isExpense) ? 2 : 1;
+                    selectedCategory = null;
                   });
                 },
                 inactiveTrackColor: Colors.green[200],
@@ -82,20 +104,50 @@ class _TransactionPageState extends State<TransactionPage> {
               style: GoogleFonts.montserrat(fontSize: 16),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: DropdownButton<String>(
-                value: dropDownValue,
-                isExpanded: true,
-                icon: Icon(Icons.arrow_downward),
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+          FutureBuilder<List<Category>>(
+              future: getAllCategory(type),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                }).toList(),
-                onChanged: (String? value) {}),
-          ),
+                } else {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.length > 0) {
+                      selectedCategory = snapshot.data!.first;
+                      print('Apanih : ' + snapshot.toString());
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton<Category>(
+                            value: (selectedCategory == null)
+                                ? snapshot.data!.first
+                                : selectedCategory,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            items: snapshot.data!.map((Category item) {
+                              return DropdownMenuItem<Category>(
+                                value: item,
+                                child: Text(item.name),
+                              );
+                            }).toList(),
+                            onChanged: (Category? value) {
+                              setState(() {
+                                selectedCategory = value;
+                              });
+                            }),
+                      );
+                    } else {
+                      return Center(
+                        child: Text("Data Kosong"),
+                      );
+                    }
+                  } else {
+                    return Center(
+                      child: Text("Tidak ada Data"),
+                    );
+                  }
+                }
+              }),
           SizedBox(
             height: 25,
           ),
@@ -138,9 +190,12 @@ class _TransactionPageState extends State<TransactionPage> {
           Center(
               child: ElevatedButton(
                   onPressed: () {
-                    print('amount : ' + amountController.text);
-                    print('date : ' + dateController.text);
-                    print('detail : ' + detailController.text);
+                    insert(
+                        int.parse(amountController.text),
+                        DateTime.parse(dateController.text),
+                        detailController.text,
+                        selectedCategory!.id);
+                    Navigator.pop(context, true);
                   },
                   child: Text("Save")))
         ],
