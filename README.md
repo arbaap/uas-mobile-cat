@@ -1,16 +1,30 @@
-# uas_mobile
+# Kelompok 1 Pengembangan Aplikasi Mobile A
 
-A new Flutter project.
 
-## Getting Started
+Anggota :
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+- Aldi Fahluzi Muharam    (1207050008)
+- Ammar Taradifa          (1207050013)
+- Arba Adhy Pamungkas     (1207050016)
+- Billy Yudha Briliantama	(1207050022)
+
+
+## Aplikasi Pencatatan Keuangan
+
+Merupakan Aplikasi Aplikasi Pecatatan Keuangan menggunakan:
+
+**Client:** Flutter
+
+**Server:** SQLite
+
+## Cara Install
+
+
+## Cara Running
+
+
+## Screenshots
