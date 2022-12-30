@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -55,53 +54,26 @@ class AppDb extends _$AppDb {
     });
   }
 
-  Stream<List<TransactionWithCategory>> getAllTransaction() {
-    // final query = (select(transactions).join([
-    //   innerJoin(categories, categories.id.equalsExp(transactions.category_id))
-    // ]));
-    // log('query:: ${query.constructQuery().sql}');
-    // log('ge:: ${((await query.get()) as List<TypedResult>).toString()}');
-
+  Future<List<TransactionWithCategory>> getAllTransaction(int month) async {
     List<TransactionWithCategory> listData = List.empty(growable: true);
-
-    // query.watch().map((rows) {
-    //   log('rows');
-    //   log('rows ' + rows.toString());
-    // });
-    // log('list data ' + listData.toString());
-    // return listData;
-    // // log('transa:: ${(await query.watch().map((event) => event.toString()).toList()).toString()}');
     final query = (select(transactions).join([
       innerJoin(categories, categories.id.equalsExp(transactions.category_id))
     ]));
-    // query.watch().map((rows) {
-    //   rows.map((row) {
-    //     listData.add(TransactionWithCategory(
-    //         row.readTable(transactions), row.readTable(categories)));
-    //   });
-    // });
-    // return query.watch().listen(
-    //   (event) {
-    //     log('eleng : ${event.length}');
-    //     return TransactionWithCategory(
-    //         event.readTable(transactions), event.readTable(categories));
-    //   },
-    // );
 
-    return query.watch().map((rows) {
-      return rows.map((row) {
-        return TransactionWithCategory(
-            row.readTable(transactions), row.readTable(categories));
-      }).toList();
-    });
-
-    // map((rows) {
-    //   rows.map((row) {
-    //     listData.add(TransactionWithCategory(
-    //         row.readTable(transactions), row.readTable(categories)));
-    //   });
-    // });
-    // return listData;
+    List<TypedResult> data = await query.get();
+    if (data.isNotEmpty) {
+      for (var d in data) {
+        if (d.readTable(transactions).transaction_date.month == month) {
+          listData.add(
+            TransactionWithCategory(
+              d.readTable(transactions),
+              d.readTable(categories),
+            ),
+          );
+        }
+      }
+    }
+    return listData;
   }
 
   Future updateTransactionRepo(int id, int amount, int categoryId,

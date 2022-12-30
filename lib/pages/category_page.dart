@@ -21,7 +21,6 @@ class _CategoryPageState extends State<CategoryPage> {
     final row = await database.into(database.categories).insertReturning(
         CategoriesCompanion.insert(
             name: name, type: type, createdAt: now, updatedAt: now));
-    print('Masuk : ' + row.toString());
   }
 
   Future<List<Category>> getAllCategory(int type) async {

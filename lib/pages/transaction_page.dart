@@ -37,7 +37,6 @@ class _TransactionPageState extends State<TransactionPage> {
             amount: amount,
             createdAt: now,
             updatedAt: now));
-    print("Apaini : " + row.toString());
     // ada insert db
   }
 
@@ -134,7 +133,6 @@ class _TransactionPageState extends State<TransactionPage> {
                         selectedCategory = (selectedCategory == null)
                             ? snapshot.data!.first
                             : selectedCategory;
-                        print('Apanih : ' + snapshot.toString());
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: DropdownButton<Category>(
@@ -203,7 +201,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 child: ElevatedButton(
                   onPressed: () async {
                     (widget.transactionWithCategory == null)
-                        ? insert(
+                        ? await insert(
                             int.parse(amountController.text),
                             DateTime.parse(dateController.text),
                             detailController.text,
@@ -214,7 +212,6 @@ class _TransactionPageState extends State<TransactionPage> {
                             selectedCategory!.id,
                             DateTime.parse(dateController.text),
                             detailController.text);
-                    setState(() {});
                     Navigator.pop(context, true);
                   },
                   child: const Text("Save"),

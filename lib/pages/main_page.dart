@@ -1,12 +1,10 @@
 import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:uas_mobile/pages/category_page.dart';
 import 'package:uas_mobile/pages/home_page.dart';
-import 'package:uas_mobile/pages/transaction_page.dart';
+import 'package:uas_mobile/pages/news_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -34,10 +32,9 @@ class _MainPageState extends State<MainPage> {
       }
       currentIndex = index;
       _children = [
-        HomePage(
-          selectedDate: selectedDate,
-        ),
-        CategoryPage()
+        HomePage(selectedDate: selectedDate),
+        CategoryPage(),
+        NewsPage(),
       ];
     });
   }
@@ -56,7 +53,7 @@ class _MainPageState extends State<MainPage> {
                   updateView(0, selectedDate);
                 });
               },
-              firstDate: DateTime.now().subtract(Duration(days: 140)),
+              firstDate: DateTime.now().subtract(Duration(days: 90)),
               lastDate: DateTime.now(),
             )
           : PreferredSize(
@@ -66,34 +63,12 @@ class _MainPageState extends State<MainPage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
                   child: Text(
-                    "Categories",
+                    "Kategori",
                     style: GoogleFonts.montserrat(fontSize: 20),
                   ),
                 ),
               ),
             ),
-      floatingActionButton: Visibility(
-        visible: (currentIndex == 0) ? true : false,
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context)
-                .push(
-              MaterialPageRoute(
-                builder: (context) => TransactionPage(
-                  transactionWithCategory: null,
-                ),
-              ),
-            )
-                .then(
-              (value) {
-                setState(() {});
-              },
-            );
-          },
-          backgroundColor: Colors.green,
-          child: Icon(Icons.add),
-        ),
-      ),
       body: _children[currentIndex],
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomAppBar(
@@ -114,7 +89,9 @@ class _MainPageState extends State<MainPage> {
             ),
             const SizedBox(width: 10),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                updateView(2, null);
+              },
               icon: Icon(Icons.newspaper),
             )
           ],
