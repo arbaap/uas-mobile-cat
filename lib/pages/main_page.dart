@@ -16,6 +16,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   late DateTime selectedDate;
   late List<Widget> _children;
+  final List<String> _topText = [
+    "",
+    "Kategori",
+    "Berita Finansial",
+  ];
   late int currentIndex;
 
   @override
@@ -63,7 +68,7 @@ class _MainPageState extends State<MainPage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
                   child: Text(
-                    "Kategori",
+                    _topText[currentIndex],
                     style: GoogleFonts.montserrat(fontSize: 20),
                   ),
                 ),

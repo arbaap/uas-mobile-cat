@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:uas_mobile/models/database.dart';
 import 'package:uas_mobile/models/transaction_with_category.dart';
 import 'package:uas_mobile/pages/transaction_page.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   int totalPengeluaranBulanan = 0;
   int totalPemasukanBulanan = 0;
   int totalTransaksiBulanan = 0;
+  var nowMonth = DateFormat.yMMMM('id').format(DateTime.now());
   @override
   void initState() {
     // TODO: implement initState
@@ -74,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Pengeluaran Desember 2022",
+                      "Pengeluaran $nowMonth",
                       style: GoogleFonts.montserrat(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.uas_mobile">
+    package="com.release.uas_mobilee">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="uas_mobile"
