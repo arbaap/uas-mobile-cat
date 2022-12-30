@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_mobile/models/database.dart';
 import 'package:uas_mobile/models/transaction_with_category.dart';
@@ -17,184 +16,230 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AppDb database = AppDb();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    log("asdasdasdas");
+    var allTransaction = database.getAllTransaction();
+
+    log('le: ${allTransaction}');
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          child: Icon(Icons.download, color: Colors.green),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Pemasukan",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 12),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "Rp. 3.800.000",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 12),
-                            )
-                          ],
-                        )
-                      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pengeluaran Desember 2022",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          child: Icon(Icons.upload, color: Colors.red),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Pengeluaran",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 12),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "Rp. 3.800.000",
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white, fontSize: 12),
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                  ]),
-              width: double.infinity,
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                  borderRadius: BorderRadius.circular(16)),
+                  ),
+                  Text(
+                    "Rp19.500",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 42,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              "Transaction",
-              style: GoogleFonts.montserrat(
-                  fontSize: 16, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.download,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Pemasukan",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.grey[800], fontSize: 12),
+                              ),
+                              Text(
+                                "Rp3.800.000",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.grey[800],
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.insert_chart_outlined_outlined,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Total transaksi",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.grey[800],
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                "-Rp3.800",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.grey[800],
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          StreamBuilder<List<TransactionWithCategory>>(
+            // Konten Transaksi
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "Transaksi",
+                style: GoogleFonts.montserrat(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            StreamBuilder<List<TransactionWithCategory>>(
               stream: database.getTransactionByDateRepo(widget.selectedDate),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 } else {
                   if (snapshot.hasData) {
-                    if (snapshot.data!.length > 0) {
+                    if (snapshot.data!.isNotEmpty) {
                       return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Card(
-                                elevation: 10,
-                                child: ListTile(
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.delete),
-                                        onPressed: () async {
-                                          await database.deleteCategoryRepo(
-                                              snapshot
-                                                  .data![index].transaction.id);
-                                          setState(() {});
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      IconButton(
-                                          icon: Icon(Icons.edit),
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TransactionPage(
-                                                          transactionWithCategory:
-                                                              snapshot
-                                                                  .data![index],
-                                                        )));
-                                          })
-                                    ],
-                                  ),
-                                  title: Text("Rp. " +
-                                      snapshot.data![index].transaction.amount
-                                          .toString()),
-                                  subtitle: Text(snapshot
-                                          .data![index].category.name +
-                                      "(" +
-                                      snapshot.data![index].transaction.name +
-                                      ")"),
-                                  leading: Container(
-                                    child: (snapshot
-                                                .data![index].category.type ==
-                                            2)
-                                        ? Icon(Icons.upload, color: Colors.red)
-                                        : Icon(Icons.download,
-                                            color: Colors.green),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8)),
-                                  ),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Card(
+                              elevation: 10,
+                              child: ListTile(
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () async {
+                                        await database.deleteCategoryRepo(
+                                            snapshot
+                                                .data![index].transaction.id);
+                                        setState(() {});
+                                      },
+                                    ),
+                                    const SizedBox(width: 10),
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TransactionPage(
+                                              transactionWithCategory:
+                                                  snapshot.data![index],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                                title: Text(
+                                  'Rp${snapshot.data![index].transaction.amount.toString()}',
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      snapshot.data![index].category.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      snapshot.data![index].transaction.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  ],
+                                ),
+                                leading: Container(
+                                  child:
+                                      (snapshot.data![index].category.type == 2)
+                                          ? const Icon(
+                                              Icons.upload,
+                                              color: Colors.red,
+                                            )
+                                          : const Icon(
+                                              Icons.download,
+                                              color: Colors.green,
+                                            ),
                                 ),
                               ),
-                            );
-                          });
-                    } else {
-                      return Center(
-                        child: Text("Data Kosong"),
+                            ),
+                          );
+                        },
                       );
+                    } else {
+                      return const Center(child: Text("Data Kosong"));
                     }
                   } else {
-                    return Center(
-                      child: Text("Tidak ada data"),
-                    );
+                    return const Center(child: Text("Tidak ada data"));
                   }
                 }
-              }),
-        ],
-      )),
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

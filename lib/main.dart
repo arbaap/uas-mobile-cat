@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_mobile/pages/main_page.dart';
 
@@ -14,6 +13,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MainPage(),
       theme: ThemeData(primarySwatch: Colors.green),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.grey,
+        primaryColor: Colors.black,
+        brightness: Brightness.dark,
+        dividerColor: Colors.black12,
+      ),
+      themeMode: ThemeMode.light,
     );
   }
 }

@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_mobile/models/database.dart';
 
@@ -13,9 +10,10 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  final AppDb database = AppDb();
+
   bool isExpense = true;
   int type = 2;
-  final AppDb database = AppDb();
   TextEditingController categoryNameController = TextEditingController();
 
   Future insert(String name, int type) async {
@@ -35,153 +33,162 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   void openDialog(Category? category) {
-    if (category != null) {
-      categoryNameController.text = category.name;
-    }
+    if (category != null) categoryNameController.text = category.name;
     showDialog(
-        context: context,
-        builder: (BuildContext) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-                child: Column(
+      context: context,
+      builder: (BuildContext) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
               children: [
                 Text(
-                  (isExpense) ? "Add Expense" : "Add Income",
+                  (isExpense)
+                      ? "Tambah kategori pengeluaran"
+                      : "Tambah kategori pemasukan",
                   style: GoogleFonts.montserrat(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: (isExpense) ? Colors.red : Colors.green),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: categoryNameController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), hintText: "Name"),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Tulis nama kategori",
+                  ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
-                    onPressed: () {
-                      if (category == null) {
-                        insert(categoryNameController.text, isExpense ? 2 : 1);
-                      } else {
-                        update(category.id, categoryNameController.text);
-                      }
-                      Navigator.of(context, rootNavigator: true).pop("dialog");
-                      setState(() {});
-                      categoryNameController.clear();
-                    },
-                    child: Text("Save"))
+                  onPressed: () {
+                    if (category == null) {
+                      insert(categoryNameController.text, isExpense ? 2 : 1);
+                    } else {
+                      update(category.id, categoryNameController.text);
+                    }
+                    Navigator.of(context, rootNavigator: true).pop("dialog");
+                    setState(() {});
+                    categoryNameController.clear();
+                  },
+                  child: const Text("Simpan"),
+                )
               ],
-            )),
-          );
-        });
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Switch(
-                value: isExpense,
-                onChanged: (bool value) {
-                  setState(() {
-                    isExpense = value;
-                    type = value ? 2 : 1;
-                  });
-                },
-                inactiveTrackColor: Colors.green[200],
-                inactiveThumbColor: Colors.green,
-                activeColor: Colors.red,
-              ),
-              IconButton(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Switch(
+                  value: isExpense,
+                  onChanged: (bool value) {
+                    setState(
+                      () {
+                        isExpense = value;
+                        type = value ? 2 : 1;
+                      },
+                    );
+                  },
+                  inactiveTrackColor: Colors.green[200],
+                  inactiveThumbColor: Colors.green,
+                  activeColor: Colors.red,
+                ),
+                Text(
+                  (isExpense) ? "Pengeluaran" : "Pemasukan",
+                  style: GoogleFonts.montserrat(
+                      fontSize: 18,
+                      color: (isExpense) ? Colors.red : Colors.green),
+                ),
+                Expanded(child: Container()),
+                IconButton(
                   onPressed: () {
                     openDialog(null);
                   },
-                  icon: Icon(Icons.add))
-            ],
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
           ),
-        ),
-        FutureBuilder<List<Category>>(
+          FutureBuilder<List<Category>>(
             future: getAllCategory(type),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               } else {
                 if (snapshot.hasData) {
                   if (snapshot.data!.length > 0) {
                     return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Card(
-                                elevation: 10,
-                                child: ListTile(
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.delete),
-                                        onPressed: () {
-                                          database.deleteCategoryRepo(
-                                              snapshot.data![index].id);
-                                          setState(() {});
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.edit),
-                                        onPressed: () {
-                                          openDialog(snapshot.data![index]);
-                                        },
-                                      )
-                                    ],
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Card(
+                            elevation: 10,
+                            child: ListTile(
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      database.deleteCategoryRepo(
+                                          snapshot.data![index].id);
+                                      setState(() {});
+                                    },
                                   ),
-                                  leading: Container(
-                                      padding: EdgeInsets.all(3),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      child: (isExpense)
-                                          ? Icon(Icons.upload,
-                                              color: Colors.redAccent[400])
-                                          : Icon(
-                                              Icons.download,
-                                              color: Colors.greenAccent[400],
-                                            )),
-                                  title: Text(snapshot.data![index].name),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () {
+                                      openDialog(snapshot.data![index]);
+                                    },
+                                  )
+                                ],
+                              ),
+                              leading: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ));
-                        });
-                  } else {
-                    return Center(
-                      child: Text("No Has Data"),
+                                child: (isExpense)
+                                    ? Icon(
+                                        Icons.upload,
+                                        color: Colors.redAccent[400],
+                                      )
+                                    : Icon(
+                                        Icons.download,
+                                        color: Colors.greenAccent[400],
+                                      ),
+                              ),
+                              title: Text(snapshot.data![index].name),
+                            ),
+                          ),
+                        );
+                      },
                     );
+                  } else {
+                    return const Center(child: Text("Belum ada data"));
                   }
                 } else {
-                  return Center(
-                    child: Text("No Has Data"),
-                  );
+                  return const Center(child: Text("Belum ada data"));
                 }
               }
-            }),
-      ],
-    ));
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

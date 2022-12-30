@@ -32,7 +32,6 @@ class _MainPageState extends State<MainPage> {
       if (date != null) {
         selectedDate = DateTime.parse(DateFormat('yyyy-MM-dd').format(date));
       }
-
       currentIndex = index;
       _children = [
         HomePage(
@@ -49,7 +48,7 @@ class _MainPageState extends State<MainPage> {
       appBar: (currentIndex == 0)
           ? CalendarAppBar(
               accent: Colors.green,
-              backButton: false,
+              backButton: true,
               locale: 'id',
               onDateChanged: (value) {
                 setState(() {
@@ -61,51 +60,66 @@ class _MainPageState extends State<MainPage> {
               lastDate: DateTime.now(),
             )
           : PreferredSize(
+              preferredSize: Size.fromHeight(100),
               child: Container(
-                  child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-                child: Text("Categories",
-                    style: GoogleFonts.montserrat(fontSize: 20)),
-              )),
-              preferredSize: Size.fromHeight(100)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+                  child: Text(
+                    "Categories",
+                    style: GoogleFonts.montserrat(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
       floatingActionButton: Visibility(
         visible: (currentIndex == 0) ? true : false,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(
-              builder: (context) => TransactionPage(transactionWithCategory: null,),
-            ))
-                .then((value) {
-              setState(() {});
-            });
+                .push(
+              MaterialPageRoute(
+                builder: (context) => TransactionPage(
+                  transactionWithCategory: null,
+                ),
+              ),
+            )
+                .then(
+              (value) {
+                setState(() {});
+              },
+            );
           },
           backgroundColor: Colors.green,
           child: Icon(Icons.add),
         ),
       ),
       body: _children[currentIndex],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomAppBar(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconButton(
-              onPressed: () {
-                updateView(0, DateTime.now());
-              },
-              icon: Icon(Icons.home)),
-          SizedBox(
-            width: 20,
-          ),
-          IconButton(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: () {
+                  updateView(0, DateTime.now());
+                },
+                icon: Icon(Icons.home)),
+            const SizedBox(width: 10),
+            IconButton(
               onPressed: () {
                 updateView(1, null);
               },
-              icon: Icon(Icons.list))
-        ],
-      )),
+              icon: Icon(Icons.list),
+            ),
+            const SizedBox(width: 10),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.newspaper),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
