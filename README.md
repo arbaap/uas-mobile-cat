@@ -1,8 +1,18 @@
 # Kelompok 1 Pengembangan Aplikasi Mobile A
 
-##[UIN Sunan Gunung Djati Bandung](https://uinsgd.ac.id/) | [Teknik Informatika](http://if.uinsgd.ac.id/)
-##[Artikel Medium](https://medium.com/@ammartaradifa2/dokumentasi-aplikasi-pencatat-keuangan-dengan-flutter-dd5740594d89)
-##[Pitch Deck](https://docs.google.com/presentation/d/1--to0Wr40bsB13C0R1HH2RMZWRBS3mBx)
+[UIN Sunan Gunung Djati Bandung](https://uinsgd.ac.id/) | [Teknik Informatika](http://if.uinsgd.ac.id/)
+
+
+
+
+
+[Artikel Medium](https://medium.com/@ammartaradifa2/dokumentasi-aplikasi-pencatat-keuangan-dengan-flutter-dd5740594d89)
+
+
+
+
+
+[Pitch Deck](https://docs.google.com/presentation/d/1--to0Wr40bsB13C0R1HH2RMZWRBS3mBx)
 
 
 ![bitmap](https://user-images.githubusercontent.com/49550093/210132788-14f128aa-a006-42d8-9504-f04194ee69ed.jpg)
